@@ -1,0 +1,6 @@
+---
+import { getCollection, render } from 'astro:content';
+export async function getStaticPaths(){const entries=await getCollection('publicaciones');return entries.map(entry=>({params:{slug:entry.id},props:{entry}}));}
+const {entry}=Astro.props;const {Content}=await render(entry);
+---
+<html lang="es"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><title>{entry.data.title} | Aldo Santos</title><style>body{max-width:780px;margin:6vh auto;padding:0 24px;font:18px/1.7 Georgia,serif;color:#17302a;background:#f7f5f0}a{color:inherit}h1{font-size:clamp(2.5rem,6vw,4rem);line-height:1.1}article{margin-top:60px}</style></head><body><a href="/#publicaciones">← Volver</a><article><small>{entry.data.category} · {entry.data.date.getFullYear()}</small><h1>{entry.data.title}</h1><p>{entry.data.description}</p><hr/><Content/></article></body></html>
