@@ -1,71 +1,24 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
-<BaseLayout>
-  <main>
-    <section class="profile-hero">
-      <div class="wrap">
-        <div class="eyebrow">Perfil profesional</div>
-        <h1>Investigar para comprender.<br /><em>Analizar para actuar.</em></h1>
-        <p class="lead">Comunicador social y consultor especializado en investigación aplicada, políticas públicas, gobernanza territorial y procesos de diálogo.</p>
-      </div>
-    </section>
-    <section>
-      <div class="wrap profile-content">
-        <div class="eyebrow">Trayectoria</div>
-        <h2>Una mirada interdisciplinaria</h2>
-        <p>Mi trabajo se sitúa en la intersección entre la investigación social, el análisis político y la gestión pública. Cuento con más de quince años de experiencia en estudios, diagnósticos, asesoramiento técnico y procesos de diálogo desarrollados con instituciones públicas, organismos de cooperación, centros de investigación y organizaciones de la sociedad civil.</p>
-        <p>Me he especializado en el análisis de economías ilegales, conflictos socioambientales, gobernanza territorial, conservación y derechos de los pueblos indígenas. He trabajado principalmente en territorios amazónicos y andinos del Perú, combinando investigación documental, trabajo de campo y análisis de políticas públicas.</p>
-      </div>
-    </section>
-    <section class="feature">
-      <div class="wrap">
-        <div class="eyebrow">Ámbitos de trabajo</div>
-        <h2>Investigación, gestión y diálogo</h2>
-        <div class="grid">
-          <div class="card"><div class="meta">01 / Análisis</div><h3>Economías ilegales y seguridad</h3><p>Minería informal e ilegal, crimen organizado, dinámicas territoriales y políticas de seguridad.</p></div>
-          <div class="card"><div class="meta">02 / Territorio</div><h3>Gobernanza y conservación</h3><p>Conflictos socioambientales, gestión territorial, áreas naturales protegidas y políticas ambientales.</p></div>
-          <div class="card"><div class="meta">03 / Derechos</div><h3>Pueblos indígenas y participación</h3><p>Derechos colectivos, consulta previa, participación intercultural y facilitación de espacios de diálogo.</p></div>
-        </div>
-      </div>
-    </section>
-    <section>
-      <div class="wrap profile-content">
-        <div class="eyebrow">Experiencia institucional</div>
-        <h2>Trabajo entre instituciones y territorios</h2>
-        <p>Mi experiencia profesional comprende colaboraciones y responsabilidades en la Presidencia del Consejo de Ministros, el Ministerio de Cultura, el Ministerio del Interior, el Congreso de la República y la Defensoría del Pueblo, así como trabajos vinculados con el Programa de las Naciones Unidas para el Desarrollo (PNUD), IDEA Internacional, el Instituto de Estudios Peruanos (IEP) y otras organizaciones de investigación y sociedad civil.</p>
-        <p>Estos espacios me han permitido abordar problemas públicos desde distintas perspectivas: la producción de evidencia, el diseño y evaluación de intervenciones, la gestión institucional y la relación directa con actores territoriales.</p>
-      </div>
-    </section>
-    <section class="feature">
-      <div class="wrap profile-content">
-        <div class="eyebrow">Formación</div>
-        <h2>Formación académica</h2>
-        <div class="education"><h3>Universidad Nacional del Altiplano</h3><p>Formación en Ciencias de la Comunicación Social.</p></div>
-        <div class="education"><h3>Universidad Antonio Ruiz de Montoya</h3><p>Estudios de Maestría en Ciencia Política, mención en Gerencia Pública.</p></div>
-        <div class="education"><h3>Pontificia Universidad Católica del Perú · George Washington University</h3><p>Programa de Gobernabilidad, Gerencia Política y Gestión Pública.</p></div>
-      </div>
-    </section>
-    <section>
-      <div class="wrap profile-content">
-        <div class="eyebrow">Producción intelectual</div>
-        <h2>Investigaciones y publicaciones</h2>
-        <p>Una selección de artículos, investigaciones y documentos de trabajo estará disponible en el archivo de publicaciones.</p>
-        <a class="link" href="/#publicaciones">Ver publicaciones →</a>
-      </div>
-    </section>
-  </main>
-</BaseLayout>
+<BaseLayout title="Perfil profesional | Aldo Santos" description="Trayectoria de Aldo Santos en investigación, políticas públicas, análisis territorial y procesos de diálogo." current="perfil">
+<div class="profile-banner" aria-label="Fotografía de Aldo Santos">
+  <img class="profile-banner-image" src="/images/aldo-santos-perfil.png" alt="Aldo Santos en un entorno natural, fotografía en blanco y negro" loading="eager" fetchpriority="high" />
+</div>
+<div class="profile-description wrap">
+  <p>Comunicador y consultor en políticas públicas, asuntos sociales y territoriales.</p>
+</div>
+<section><div class="wrap"><div class="eyebrow">Trayectoria</div><h2>Comprender los problemas públicos desde distintas perspectivas.</h2><div class="profile-copy"><p>Cuento con más de quince años de experiencia profesional en instituciones del Estado, centros de investigación y organizaciones de cooperación y de la sociedad civil. He trabajado en el análisis de políticas públicas, la conflictividad social y los procesos territoriales e institucionales.</p><p>Mi experiencia comprende investigaciones, diagnósticos territoriales y estudios sobre conflictos socioambientales; identificación de pueblos indígenas y análisis de derechos colectivos; así como diseño, acompañamiento y facilitación de procesos de consulta previa y participación intercultural.</p><p>También desarrollo análisis sobre minería informal e ilegal, economías ilegales y dinámicas del crimen organizado, con atención a sus implicancias para la gobernanza, la seguridad y las relaciones entre actores en distintos territorios del Perú.</p><p>La investigación, el asesoramiento técnico y el diálogo son dimensiones complementarias de mi práctica profesional.</p></div></div></section>
+<section class="feature"><div class="wrap"><div class="eyebrow">Experiencia</div><h2>Ámbitos de trabajo</h2><div class="grid"><div class="card"><div class="meta">01 / Investigación</div><h3>Investigación y análisis territorial</h3><p>Estudios aplicados, diagnósticos, análisis de actores, conflictividad social, economías ilegales y procesos institucionales.</p></div><div class="card"><div class="meta">02 / Consultoría</div><h3>Políticas públicas y gobernanza</h3><p>Asesoramiento técnico, gestión territorial, derechos colectivos, conservación y análisis de políticas públicas.</p></div><div class="card"><div class="meta">03 / Facilitación</div><h3>Diálogo y participación</h3><p>Diseño y acompañamiento de procesos de diálogo, consulta previa y participación intercultural.</p></div></div></div></section>
+<section><div class="wrap"><div class="eyebrow">Recorrido institucional</div><h2>Experiencia en distintos espacios.</h2><p class="institution-list">Mi trayectoria incluye trabajos vinculados con la Presidencia del Consejo de Ministros, el Ministerio de Cultura, el Ministerio del Interior y el Congreso de la República, así como con el Programa de las Naciones Unidas para el Desarrollo (PNUD), IDEA Internacional, el Instituto de Estudios Peruanos (IEP), el Instituto del Bien Común (IBC) y Servicios Educativos Rurales (SER), entre otras organizaciones.</p><p class="small-note">Las funciones, periodos y proyectos específicos se incorporarán una vez revisada su presentación pública.</p></div></section>
+<section class="feature"><div class="wrap"><div class="eyebrow">Formación</div><h2>Formación académica</h2><div class="split"><div class="card"><h3>Comunicación y ciencia política</h3><p>Formación en Ciencias de la Comunicación Social en la Universidad Nacional del Altiplano y estudios de maestría en Ciencia Política, con mención en Gerencia Pública, en la Universidad Antonio Ruiz de Montoya.</p></div><div class="card"><h3>Gobernabilidad y gestión pública</h3><p>Programa de Gobernabilidad, Gerencia Política y Gestión Pública de la Pontificia Universidad Católica del Perú y George Washington University.</p></div></div></div></section>
+<section class="contact"><div class="wrap"><div class="eyebrow">Contacto</div><h2>Conversemos.</h2><p>Para consultas profesionales, investigaciones o colaboraciones, puedes utilizar la sección de contacto de la página de inicio.</p><a class="action" style="background:#f7f5f0;color:#17302a" href="/#contacto">Ir a contacto ↗</a></div></section>
 <style>
-  .profile-hero { padding: 7rem 0 6rem; }
-  .profile-hero h1 { font-size: clamp(3.4rem, 7vw, 6.8rem); line-height: 1.05; letter-spacing: -.045em; margin: 1.5rem 0 2rem; }
-  .profile-hero em { font-weight: inherit; }
-  .lead { max-width: 760px; font-size: clamp(1.2rem, 2vw, 1.65rem); line-height: 1.55; }
-  section:not(.profile-hero) { padding-top: 5rem; padding-bottom: 5rem; }
-  .profile-content { max-width: 1120px; }
-  .profile-content > p { max-width: 850px; font-size: 1.2rem; line-height: 1.8; }
-  .education { border-top: 1px solid rgba(30,55,46,.22); padding: 1.25rem 0; }
-  .education h3 { margin: 0 0 .5rem; }
-  .education p { margin: 0; }
-  @media (max-width: 650px) { .profile-hero { padding: 4rem 0; } section:not(.profile-hero) { padding-top: 3.5rem; padding-bottom: 3.5rem; } }
+/* Fotografía original sin recortes, filtros ni alteraciones de color. */
+.profile-banner{width:100%;margin:0;padding:0;overflow:hidden;background:transparent}
+.profile-banner-image{display:block;width:100%;height:auto;max-width:none;filter:none;opacity:1;mix-blend-mode:normal}
+.profile-description{padding-top:38px;padding-bottom:40px}
+.profile-description p{max-width:900px;margin:0;font-family:'DM Serif Display',serif;font-weight:400;font-size:clamp(1.65rem,3vw,2.8rem);line-height:1.25;color:var(--ink)}
+@media(max-width:750px){.profile-description{padding-top:28px;padding-bottom:30px}}
 </style>
+</BaseLayout>
