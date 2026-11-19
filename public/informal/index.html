@@ -21,6 +21,7 @@
 @media(max-width:760px){.sidebar{height:47%;bottom:auto;width:100%;box-shadow:0 3px 15px #0008}#map{inset:47% 0 0 0}#load{inset:47% 0 0 0}.brand{padding:12px 16px 7px}.brand h1{font-size:20px}.brand p{display:none}.content{padding:12px 15px}.section{margin-bottom:12px}.maplabel{top:calc(47% + 12px);right:10px;padding:9px 11px;max-width:200px}}
 .maplabel{right:60px}.bottom{font-size:12px}.cat{font-size:14px}.note{font-size:14px}.section h2{font-size:13px}input[type=search],select{font-size:16px}.brand p{font-size:14px}.maplibregl-ctrl-attrib{max-width:calc(100vw - 390px);font-size:11px!important}
 @media(max-width:760px){.maplabel{right:52px}.maplibregl-ctrl-attrib{max-width:calc(100vw - 20px)}}
+.boundary-swatch{width:22px;flex-shrink:0;border-top:3px solid #ffdd79}.boundary-swatch.prov{border-top:2px dashed #f7a9ef}.boundary-swatch.dist{border-top:2px dotted #8ee7ff}.boundary-state{font-size:11px;color:#b4c8d5;white-space:nowrap}.boundary-note{font-size:12px;line-height:1.5;color:#abc0cc}.boundary-note a{color:#bfe5f2}
 </style>
 </head>
 <body>
@@ -29,6 +30,12 @@
  <div class="content">
   <div class="section"><h2>Buscar concesión o titular</h2><div class="search-wrap"><input aria-label="Buscar concesión o titular" type="search" id="query" placeholder="Nombre, código o titular..." autocomplete="off"><div id="results"></div></div></div>
   <div class="section"><h2>Ámbito territorial</h2><select aria-label="Ámbito territorial" id="region"><option value="">Todo el Perú · 25 regiones</option></select></div>
+  <div class="section"><h2>Límites administrativos</h2>
+   <label class="cat"><input type="checkbox" data-boundary="departamentos" checked><span class="boundary-swatch"></span><span class="catname">Departamentales</span><span class="boundary-state" id="state-departamentos">Cargando…</span></label>
+   <label class="cat"><input type="checkbox" data-boundary="provincias" checked><span class="boundary-swatch prov"></span><span class="catname">Provinciales</span><span class="boundary-state" id="state-provincias">Acércate</span></label>
+   <label class="cat"><input type="checkbox" data-boundary="distritos" checked><span class="boundary-swatch dist"></span><span class="catname">Distritales</span><span class="boundary-state" id="state-distritos">Acércate</span></label>
+   <p class="boundary-note">Los límites provinciales y distritales aparecen progresivamente al acercar. Capas referenciales del servicio <a href="https://geocatmin.ingemmet.gob.pe/arcgis/rest/services/SERV_CARTOGRAFIA_DEMARCACION_WGS84/MapServer" target="_blank" rel="noopener noreferrer">INGEMMET · GEOCATMIN</a>, descargadas el 19/11/2026 y simplificadas para este visor. Registro de ingreso en la fuente: 26/12/2024. No equivalen a una demarcación legal.</p>
+  </div>
   <div class="section"><h2>Clasificación por formalización</h2>
    <label class="cat"><input type="checkbox" data-cat="vigente" checked><span class="swatch" style="background:#41cb9f"></span><span class="catname">Con REINFO vigente</span><b class="num">4.722</b></label>
    <label class="cat"><input type="checkbox" data-cat="formalizado" checked><span class="swatch" style="background:#45bcd4"></span><span class="catname">Formalizada, sin REINFO vigente</span><b class="num">307</b></label>
@@ -56,6 +63,56 @@ const SRC={
 const satelliteCredit = year => '<a href="https://cloudless.eox.at" target="_blank" rel="noopener noreferrer">EOxCloudless</a> by EOX IT Services GmbH (Contains modified Copernicus Sentinel data '+year+') · <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener noreferrer">CC BY-NC-SA 4.0</a>';
 const credits = {'s2-2025':satelliteCredit(2025),'s2-2024':satelliteCredit(2024),'relief':'Terrain light © EOX · Data © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a> and others'};
 const credit=credits['s2-2025'];
+const ADMIN_SERVICE='https://geocatmin.ingemmet.gob.pe/arcgis/rest/services/SERV_CARTOGRAFIA_DEMARCACION_WGS84/MapServer';
+const ADMIN_CREDIT='<a href="'+ADMIN_SERVICE+'" target="_blank" rel="noopener noreferrer">Límites referenciales: INGEMMET · GEOCATMIN</a>';
+const ADMIN_LAYERS=[
+ {key:'distritos',minzoom:8,color:'#8ee7ff',width:1,dash:[1,2],labelMin:9,labelMax:20},
+ {key:'provincias',minzoom:6,color:'#f7a9ef',width:1.6,dash:[5,2],labelMin:6.5,labelMax:10},
+ {key:'departamentos',minzoom:0,color:'#ffdd79',width:2.3,labelMin:3.8,labelMax:7.5}
+];
+const adminErrors=new Set(), adminLoaded=new Set();
+function updateBoundaryStatus(){
+ if(!map)return;
+ for(const layer of ADMIN_LAYERS){
+  const enabled=document.querySelector('[data-boundary="'+layer.key+'"]').checked;
+  const label=!enabled?'Oculta':map.getZoom()<layer.minzoom?'Acércate':adminErrors.has(layer.key)?'No disponible':adminLoaded.has(layer.key)?'Visible':'Cargando…';
+  document.getElementById('state-'+layer.key).textContent=label;
+ }
+}
+function applyBoundaryVisibility(layer){
+ const enabled=document.querySelector('[data-boundary="'+layer.key+'"]').checked;
+ for(const suffix of ['halo','line','label']){
+  const id='admin-'+layer.key+'-'+suffix;
+  if(map.getLayer(id))map.setLayoutProperty(id,'visibility',enabled?'visible':'none');
+ }
+ updateBoundaryStatus();
+}
+async function addBoundaries(){
+ const datasets=await Promise.all(ADMIN_LAYERS.map(async layer=>{
+  try{
+   const response=await fetch('./limites/'+layer.key+'.bin');
+   if(!response.ok)throw Error('HTTP '+response.status);
+   const stream=response.body.pipeThrough(new DecompressionStream('gzip'));
+   return await new Response(stream).json();
+  }catch(error){adminErrors.add(layer.key);console.warn('Límites '+layer.key+':',error.message);return null;}
+ }));
+ ADMIN_LAYERS.forEach((layer,index)=>{
+  const id='admin-'+layer.key,data=datasets[index];
+  const input=document.querySelector('[data-boundary="'+layer.key+'"]');
+  input.addEventListener('change',()=>applyBoundaryVisibility(layer));
+  if(!data)return;
+  map.addSource(id,{type:'geojson',data,tolerance:0.15,attribution:ADMIN_CREDIT});
+  map.addLayer({id:id+'-halo',type:'line',source:id,minzoom:layer.minzoom,paint:{'line-color':'#102333','line-width':layer.width+1.5,'line-opacity':0.75}});
+  const paint={'line-color':layer.color,'line-width':layer.width,'line-opacity':0.95};
+  if(layer.dash)paint['line-dasharray']=layer.dash;
+  map.addLayer({id:id+'-line',type:'line',source:id,minzoom:layer.minzoom,paint});
+  map.addLayer({id:id+'-label',type:'symbol',source:id,minzoom:layer.labelMin,maxzoom:layer.labelMax,layout:{'text-field':['get','nombre'],'text-font':['Open Sans Regular'],'text-size':12,'text-max-width':10,'text-padding':8},paint:{'text-color':layer.color,'text-halo-color':'#102333','text-halo-width':2}});
+  adminLoaded.add(layer.key);
+  applyBoundaryVisibility(layer);
+ });
+ map.on('zoomend',updateBoundaryStatus);
+ updateBoundaryStatus();
+}
 let attribution;
 let map, db, selectedRegion='', openCats=['vigente','formalizado','suspendida','ninguna'];
 const esc = s => String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -123,7 +180,7 @@ async function run(){
   Object.entries(db.regions).sort((a,b)=>a[1].localeCompare(b[1],'es')).forEach(([code,name])=>{if(!db.bounds[code])return;const op=document.createElement('option');op.value=code;op.textContent=name;sel.appendChild(op)});
   map=new maplibregl.Map({
    container:'map',center:[-75.2,-10.9],zoom:4.7,maxZoom:19,attributionControl:false,
-   style:{version:8,sources:{'satellite':{type:'raster',tiles:[SRC['s2-2025']],tileSize:256,maxzoom:14}},layers:[{id:'satellite-base',type:'raster',source:'satellite'}]}
+   style:{version:8,glyphs:'https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf',sources:{'satellite':{type:'raster',tiles:[SRC['s2-2025']],tileSize:256,maxzoom:14}},layers:[{id:'satellite-base',type:'raster',source:'satellite'}]}
   });
   attribution=new maplibregl.AttributionControl({customAttribution:credit,compact:false});
   map.addControl(attribution,'bottom-right');
@@ -138,6 +195,7 @@ async function run(){
    map.addLayer({id:'polylines',type:'line',source:'areas',minzoom:7.1,paint:{'line-color':color,'line-opacity':['interpolate',['linear'],['zoom'],7,0.55,11,0.8],'line-width':['interpolate',['linear'],['zoom'],7,0.35,12,1.1]}});
    map.addLayer({id:'dots',type:'circle',source:'points',maxzoom:7.6,paint:{'circle-color':color,'circle-radius':['interpolate',['linear'],['zoom'],4,1.5,6,2.5,7,3.4],'circle-opacity':0.91,'circle-stroke-color':'#113343','circle-stroke-width':0.5}});
    map.addLayer({id:'rings',type:'circle',source:'halos',maxzoom:10.5,paint:{'circle-color':'#ffffff','circle-opacity':0,'circle-radius':['interpolate',['linear'],['zoom'],4,3.6,7,7.5,10,9.5],'circle-stroke-color':'#ffb31a','circle-stroke-width':2,'circle-stroke-opacity':0.95}});
+   addBoundaries();
    ['dots','polyfill'].forEach(l=>{map.on('click',l,showPopup);map.on('mouseenter',l,()=>map.getCanvas().style.cursor='pointer');map.on('mouseleave',l,()=>map.getCanvas().style.cursor='')});
    applyFilters();
    document.getElementById('load').style.display='none';
