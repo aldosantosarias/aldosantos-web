@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>INFORMAL</title>
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="description" content="INFORMAL · Visor territorial de concesiones mineras sobre imágenes Copernicus Sentinel-2.">
+<link href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet">
+<style>
+*{box-sizing:border-box}html,body{height:100%;width:100%;padding:0;margin:0;font-family:system-ui,-apple-system,'Segoe UI',Arial,sans-serif;background:#0a1826;color:#eff6f9}
+#map{position:absolute;inset:0 0 0 360px;background:#102635}
+.sidebar{position:absolute;top:0;left:0;bottom:0;width:360px;z-index:9;background:#0f1f2e;border-right:1px solid #344454;overflow:auto;box-shadow:0 2px 20px #0005}
+.brand{padding:23px 24px 18px;border-bottom:1px solid #334659;background:#102234}.eyebrow{font-size:10px;letter-spacing:2.1px;color:#a4bfd1;text-transform:uppercase;font-weight:750}.brand h1{font-weight:750;font-size:24px;line-height:1.12;letter-spacing:-.5px;margin:7px 0}.brand p{font-size:13px;line-height:1.5;color:#c4d1df;margin:5px 0 0}.content{padding:18px 22px 12px}
+.section{margin-bottom:22px}.section h2{font-size:11px;font-weight:750;letter-spacing:1.35px;color:#a5bdc9;text-transform:uppercase;margin:0 0 12px}
+.search-wrap{position:relative}input[type=search],select{width:100%;background:#192f41;color:#f1f8fa;border:1px solid #486074;padding:12px 14px;border-radius:8px;font-size:13px;outline:none}select{cursor:pointer}input:focus,select:focus{border-color:#67b2d9;box-shadow:0 0 0 2px #2c6e9b44}#results{max-height:240px;overflow-y:auto}#results:empty{display:none}
+.hit{display:block;width:100%;padding:10px 12px;text-align:left;background:#152b3b;border:0;border-bottom:1px solid #304555;color:#e8f4fa;cursor:pointer}.hit:hover{background:#28445a}.hit strong{display:block;font-size:12px}.hit small{display:block;color:#9fb5c3;margin-top:4px}
+.cat{display:flex;gap:10px;align-items:center;margin-bottom:10px;font-size:12.5px;line-height:1.35;cursor:pointer}.cat input{width:15px;height:15px;accent-color:#67baef;flex-shrink:0;cursor:pointer}.cat .swatch{height:11px;width:11px;border-radius:2px;flex-shrink:0;border:1px solid #ffffff35}.cat .catname{flex:1}.cat .num{color:#c1d6e2;font-variant-numeric:tabular-nums}.ringswatch{display:inline-block;border:2px solid #ffb31a;width:12px;height:12px;border-radius:50%}
+.note{font-size:12px;line-height:1.45;color:#abc0cc}.notice{padding:10px 12px;border:1px solid #405866;background:#142a39;border-radius:8px;line-height:1.45;font-size:11px;color:#c0d3df;margin-top:12px}.pill{display:inline-flex;background:#183951;color:#cbeafc;padding:4px 7px;border-radius:4px;font-size:11px}.bottom{padding:10px 22px 22px;border-top:1px solid #344654;color:#9cb1c0;font-size:10px;line-height:1.5}.bottom a{color:#bfe5f2}
+.maplabel{position:absolute;top:16px;right:16px;z-index:4;background:#102333e6;padding:12px 15px;border:1px solid #ffffff35;border-radius:9px;box-shadow:0 4px 18px #0004;max-width:280px;pointer-events:none}.maplabel strong{font-size:12px;display:block}.maplabel small{color:#bbd1dd;display:block;margin-top:2px;font-size:11px}
+#load{position:absolute;inset:0 0 0 360px;background:#0d2239ee;z-index:10;display:flex;flex-direction:column;gap:12px;align-items:center;justify-content:center;text-align:center;padding:25px}.spinner{width:35px;height:35px;border:3px solid #436f8e;border-top-color:#8be1f3;border-radius:50%;animation:spin 1s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}#load p{font-size:13px;color:#bfd3df;max-width:400px;line-height:1.6}.maplibregl-popup-content{background:#132c3c;color:white;border-radius:8px;padding:14px 15px;min-width:250px;max-width:340px;box-shadow:0 8px 20px #0007}.maplibregl-popup-tip{border-top-color:#132c3c!important}.maplibregl-popup-close-button{color:white;font-size:19px}.popname{font-weight:750;font-size:15px;line-height:1.25;margin-bottom:10px}.poplabel{font-size:10px;color:#a4c4cf;letter-spacing:.8px;text-transform:uppercase;margin-top:9px}.popvalue{font-size:12px;color:#eff7f9;line-height:1.4}.popcode{color:#ade0eb;font-size:12px;margin-bottom:5px}
+@media(max-width:760px){.sidebar{height:47%;bottom:auto;width:100%;box-shadow:0 3px 15px #0008}#map{inset:47% 0 0 0}#load{inset:47% 0 0 0}.brand{padding:12px 16px 7px}.brand h1{font-size:20px}.brand p{display:none}.content{padding:12px 15px}.section{margin-bottom:12px}.maplabel{top:calc(47% + 12px);right:10px;padding:9px 11px;max-width:200px}}
+.maplabel{right:60px}.bottom{font-size:12px}.cat{font-size:14px}.note{font-size:14px}.section h2{font-size:13px}input[type=search],select{font-size:16px}.brand p{font-size:14px}.maplibregl-ctrl-attrib{max-width:calc(100vw - 390px);font-size:11px!important}
+@media(max-width:760px){.maplabel{right:52px}.maplibregl-ctrl-attrib{max-width:calc(100vw - 20px)}}
+</style>
+</head>
+<body>
+<div class="sidebar">
+ <div class="brand"><div class="eyebrow">VISOR DE ANÁLISIS TERRITORIAL · PERÚ</div><h1>INFORMAL</h1><p>Concesiones mineras sobre imágenes satelitales Copernicus Sentinel-2 · mosaicos 2024 y 2025</p></div>
+ <div class="content">
+  <div class="section"><h2>Buscar concesión o titular</h2><div class="search-wrap"><input aria-label="Buscar concesión o titular" type="search" id="query" placeholder="Nombre, código o titular..." autocomplete="off"><div id="results"></div></div></div>
+  <div class="section"><h2>Ámbito territorial</h2><select aria-label="Ámbito territorial" id="region"><option value="">Todo el Perú · 25 regiones</option></select></div>
+  <div class="section"><h2>Clasificación por formalización</h2>
+   <label class="cat"><input type="checkbox" data-cat="vigente" checked><span class="swatch" style="background:#41cb9f"></span><span class="catname">Con REINFO vigente</span><b class="num">4.722</b></label>
+   <label class="cat"><input type="checkbox" data-cat="formalizado" checked><span class="swatch" style="background:#45bcd4"></span><span class="catname">Formalizada, sin REINFO vigente</span><b class="num">307</b></label>
+   <label class="cat"><input type="checkbox" data-cat="suspendida" checked><span class="swatch" style="background:#e7af45"></span><span class="catname">Solo REINFO suspendido</span><b class="num">674</b></label>
+   <label class="cat"><input type="checkbox" data-cat="ninguna" checked><span class="swatch" style="background:#ced9dd"></span><span class="catname">Sin REINFO ni formalización</span><b class="num">45.300</b></label>
+   <label class="cat" style="margin-top:12px"><input type="checkbox" id="ring" checked><span class="ringswatch"></span><span class="catname">Con inscripción suspendida (aro adicional)</span><b class="num">1.950</b></label>
+  </div>
+  <div class="section"><h2>Fondo satelital</h2><select aria-label="Fondo satelital" id="basemap"><option value="s2-2025">Copernicus Sentinel-2 · 2025</option><option value="s2-2024">Copernicus Sentinel-2 · 2024</option><option value="relief">EOX · terreno y relieve</option></select><p class="note">Acércate con la rueda del ratón o los controles del mapa. A mayor zoom aparecen los polígonos reales de las concesiones.</p><div class="notice">Las imágenes satelitales son mosaicos de distintos días, no tomas en vivo. Detalle nominal Sentinel-2 de hasta 10 m; el mapa necesita conexión a internet para el fondo.</div></div>
+  <div class="section"><h2>Estado</h2><div id="status" class="note">Preparando 51.003 registros...</div></div>
+ </div>
+ <div class="bottom">Base de concesiones: copia de trabajo consultada el 19/11/2026; no se actualiza automáticamente. Las categorías describen registros administrativos, no verifican actividad en el terreno. Fondo: <a href="https://cloudless.eox.at" target="_blank" rel="noopener noreferrer">EOxCloudless</a> by EOX IT Services GmbH (Contains modified Copernicus Sentinel data 2024–2025). <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener noreferrer">CC BY-NC-SA 4.0</a>, uso no comercial. Este visor no incorpora imágenes al archivo: se solicitan al servicio oficial de EOX.</div>
+</div>
+<div id="map"></div><div class="maplabel"><strong>COBERTURA NACIONAL</strong><small>25 regiones · 51.002 concesiones en el mapa</small></div>
+<div id="load"><div class="spinner"></div><strong>Preparando mapa de concesiones</strong><p id="loadmsg">Descomprimiendo las geometrías, construyendo el visor y preparando el fondo Sentinel-2...</p></div>
+<script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+<script>
+
+const COLOR={vigente:'#41cb9f',formalizado:'#45bcd4',suspendida:'#e7af45',ninguna:'#ced9dd'};
+const SAT_URL='https://tiles.maps.eox.at/wmts/1.0.0/';
+const SRC={
+  's2-2025':SAT_URL+'s2cloudless-2025_3857/default/g/{z}/{y}/{x}.jpg',
+  's2-2024':SAT_URL+'s2cloudless-2024_3857/default/g/{z}/{y}/{x}.jpg',
+  'relief':SAT_URL+'terrain-light_3857/default/g/{z}/{y}/{x}.png'
+};
+const satelliteCredit = year => '<a href="https://cloudless.eox.at" target="_blank" rel="noopener noreferrer">EOxCloudless</a> by EOX IT Services GmbH (Contains modified Copernicus Sentinel data '+year+') · <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener noreferrer">CC BY-NC-SA 4.0</a>';
+const credits = {'s2-2025':satelliteCredit(2025),'s2-2024':satelliteCredit(2024),'relief':'Terrain light © EOX · Data © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a> and others'};
+const credit=credits['s2-2025'];
+let attribution;
+let map, db, selectedRegion='', openCats=['vigente','formalizado','suspendida','ninguna'];
+const esc = s => String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+async function decodeData(){
+ const response=await fetch('./concesiones.bin');
+ if(!response.ok)throw Error('No se pudo cargar la base de concesiones ('+response.status+').');
+ const arr=new Uint8Array(await response.arrayBuffer());
+ const stream=new Blob([arr]).stream().pipeThrough(new DecompressionStream('gzip'));
+ return JSON.parse(await new Response(stream).text());
+}
+function filterExpr(rings=false){
+ let r = ['in',['get','r'],['literal',openCats]];
+ if(selectedRegion)r=['all',r,['==',['get','region'],selectedRegion]];
+ return r;
+}
+function applyFilters(){
+ if(!map || !map.getLayer('dots'))return;
+ ['dots','polyfill','polylines'].forEach(id=>map.setFilter(id,filterExpr()));
+ const ringVisible=document.getElementById('ring').checked;
+ map.setLayoutProperty('rings','visibility',ringVisible?'visible':'none');
+ map.setFilter('rings',filterExpr());
+ updateStatus();
+}
+function updateStatus(){
+ const label=selectedRegion ? db.regions[selectedRegion] : 'todo el Perú';
+ const visible=db.idx.filter(x=>(!selectedRegion||x[3]===selectedRegion)&&openCats.includes(x[5])).length;
+ document.getElementById('status').textContent='Filtros actuales: '+visible.toLocaleString('es-PE')+' concesiones · '+label+'. Una concesión de la base (04007594X01) no tiene geometría utilizable y no se muestra. Los polígonos aparecen al acercar (zoom 7 o más).';
+}
+function zoomToRegion(code){
+ if(!map)return;
+ if(!code){map.fitBounds([[-82.4,-19.5],[-68.1,-0.5]],{padding:32,duration:800});return;}
+ const b=db.bounds[code];if(b)map.fitBounds([[b[0],b[1]],[b[2],b[3]]],{padding:60,maxZoom:10.5,duration:750});
+}
+function popupHtml(p){
+ const ha=Number(p.hectareas);
+ const area=Number.isFinite(ha)?ha.toLocaleString('es-PE',{maximumFractionDigits:2})+' ha':'—';
+ return `<div class="popcode">CÓDIGO ${esc(p.codigo)}</div><div class="popname">${esc(p.nombre)}</div><div class="poplabel">Situación</div><div class="popvalue"><span style="color:${COLOR[p.r]}">●</span> ${esc({'vigente':'Con REINFO vigente','formalizado':'Formalizada sin REINFO vigente','suspendida':'Solo REINFO suspendido','ninguna':'Sin REINFO ni formalización'}[p.r])}</div><div class="poplabel">Titular</div><div class="popvalue">${esc(p.titular)}</div><div class="poplabel">Distrito · Superficie</div><div class="popvalue">${esc(p.distrito)} · ${area}</div><div class="poplabel">Inscripciones REINFO</div><div class="popvalue">${esc(p.vigentes)} vigentes · ${esc(p.suspendidos)} suspendidas</div>`;
+}
+function showPopup(e){
+ const p=e.features?.[0]?.properties;if(!p)return;
+ new maplibregl.Popup({closeButton:true,maxWidth:'350px'}).setLngLat(e.lngLat).setHTML(popupHtml(p)).addTo(map);
+}
+function search(){
+ const q=document.getElementById('query').value.normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim().toLowerCase();
+ const out=document.getElementById('results');out.innerHTML='';if(q.length<2)return;
+ const matches=db.idx.filter(item=>(item[0]+' '+item[1]+' '+item[2]).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().includes(q)).slice(0,12);
+ for(let i=0;i<matches.length;i++){
+  const x=matches[i];const btn=document.createElement('button');btn.className='hit';
+  btn.innerHTML=`<strong>${esc(x[1])}</strong><small>${esc(x[0])} · ${esc(db.regions[x[3]]||x[3])}</small>`;
+  btn.addEventListener('click',()=>{
+   selectedRegion='';document.getElementById('region').value='';applyFilters();
+   map.flyTo({center:x[4],zoom:12.5,duration:1100});out.innerHTML='';
+   const f=db.poly.features.find(f=>f.id===x[6]);
+   if(f){new maplibregl.Popup({closeButton:true,maxWidth:'350px'}).setLngLat(x[4]).setHTML(popupHtml(f.properties)).addTo(map);}
+  });out.appendChild(btn);
+ }
+ if(!matches.length)out.innerHTML='<div class="note" style="padding:10px">Sin coincidencias.</div>';
+}
+async function run(){
+ try{
+  document.getElementById('loadmsg').textContent='Leyendo la base geográfica nacional...';
+  db=await decodeData();
+  if(!window.maplibregl)throw Error('No se pudo cargar la biblioteca cartográfica. Comprueba tu conexión a internet.');
+  const sel=document.getElementById('region');
+  Object.entries(db.regions).sort((a,b)=>a[1].localeCompare(b[1],'es')).forEach(([code,name])=>{if(!db.bounds[code])return;const op=document.createElement('option');op.value=code;op.textContent=name;sel.appendChild(op)});
+  map=new maplibregl.Map({
+   container:'map',center:[-75.2,-10.9],zoom:4.7,maxZoom:19,attributionControl:false,
+   style:{version:8,sources:{'satellite':{type:'raster',tiles:[SRC['s2-2025']],tileSize:256,maxzoom:14}},layers:[{id:'satellite-base',type:'raster',source:'satellite'}]}
+  });
+  attribution=new maplibregl.AttributionControl({customAttribution:credit,compact:false});
+  map.addControl(attribution,'bottom-right');
+  map.addControl(new maplibregl.NavigationControl({visualizePitch:false}),'top-right');
+  map.addControl(new maplibregl.ScaleControl({maxWidth:130,unit:'metric'}),'bottom-right');
+  map.on('load',()=>{
+   map.addSource('areas',{type:'geojson',data:db.poly,tolerance:0.2});
+   map.addSource('points',{type:'geojson',data:db.pts});
+   map.addSource('halos',{type:'geojson',data:db.halos});
+   const color=['match',['get','r'],'vigente',COLOR.vigente,'formalizado',COLOR.formalizado,'suspendida',COLOR.suspendida,'ninguna',COLOR.ninguna,'#ffffff'];
+   map.addLayer({id:'polyfill',type:'fill',source:'areas',minzoom:7.1,paint:{'fill-color':color,'fill-opacity':['interpolate',['linear'],['zoom'],7,0.11,10,0.21,13,0.30]}});
+   map.addLayer({id:'polylines',type:'line',source:'areas',minzoom:7.1,paint:{'line-color':color,'line-opacity':['interpolate',['linear'],['zoom'],7,0.55,11,0.8],'line-width':['interpolate',['linear'],['zoom'],7,0.35,12,1.1]}});
+   map.addLayer({id:'dots',type:'circle',source:'points',maxzoom:7.6,paint:{'circle-color':color,'circle-radius':['interpolate',['linear'],['zoom'],4,1.5,6,2.5,7,3.4],'circle-opacity':0.91,'circle-stroke-color':'#113343','circle-stroke-width':0.5}});
+   map.addLayer({id:'rings',type:'circle',source:'halos',maxzoom:10.5,paint:{'circle-color':'#ffffff','circle-opacity':0,'circle-radius':['interpolate',['linear'],['zoom'],4,3.6,7,7.5,10,9.5],'circle-stroke-color':'#ffb31a','circle-stroke-width':2,'circle-stroke-opacity':0.95}});
+   ['dots','polyfill'].forEach(l=>{map.on('click',l,showPopup);map.on('mouseenter',l,()=>map.getCanvas().style.cursor='pointer');map.on('mouseleave',l,()=>map.getCanvas().style.cursor='')});
+   applyFilters();
+   document.getElementById('load').style.display='none';
+   zoomToRegion('');
+  });
+  map.on('error',e=>{if(e.error?.message)console.warn('Servicio cartográfico:',e.error.message)});
+  document.querySelectorAll('[data-cat]').forEach(el=>el.addEventListener('change',()=>{openCats=[...document.querySelectorAll('[data-cat]:checked')].map(a=>a.dataset.cat);applyFilters()}));
+  document.getElementById('region').addEventListener('change',e=>{selectedRegion=e.target.value;applyFilters();zoomToRegion(selectedRegion)});
+  document.getElementById('ring').addEventListener('change',applyFilters);
+  document.getElementById('query').addEventListener('input',search);
+  document.getElementById('basemap').addEventListener('change',e=>{
+   const value=e.target.value;
+   map.getSource('satellite').setTiles([SRC[value]]);
+   map.removeControl(attribution);
+   attribution=new maplibregl.AttributionControl({customAttribution:credits[value],compact:false});
+   map.addControl(attribution,'bottom-right');
+   document.querySelector('.maplabel strong').textContent=value==='relief'?'FONDO TOPOGRÁFICO':'COPERNICUS SENTINEL-2';
+   document.querySelector('.maplabel small').textContent=value==='relief'?'Relieve EOX':('Mosaico '+(value==='s2-2025'?'2025':'2024')+' · 51.002 concesiones en el mapa');
+  });
+ }catch(e){console.error(e);document.getElementById('loadmsg').textContent='No se pudo iniciar el visor: '+e.message;document.querySelector('.spinner').style.display='none';}
+}
+run();
+</script></body></html>

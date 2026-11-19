@@ -1,0 +1,4 @@
+/informal
+  X-Robots-Tag: noindex, nofollow, noarchive
+/informal/*
+  X-Robots-Tag: noindex, nofollow, noarchive
